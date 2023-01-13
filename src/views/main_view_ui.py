@@ -1,52 +1,30 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from .style.style_buttons import *
+
+
 
 
 class Ui_MainWindow(object):
     def setup_ui(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(300, 250)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.vboxlayout = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.vboxlayout.setObjectName("vboxlayout")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
+        MainWindow.setWindowTitle("Main")
+        MainWindow.resize(700, 800)
+        # self.main_window_fone = MainWindow.palette()
+        # self.main_window_fone.setBrush(QtGui.QPalette.Normal, QtGui.QPalette.Window,
+        #      QtGui.QBrush(QtGui.QPixmap(r"images/fone.jpg")))
+        # MainWindow.setPalette(self.main_window_fone)
 
-        self.listWidget_names = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidget_names.setObjectName("listWidget_names")
-        self.verticalLayout.addWidget(self.listWidget_names)
-
-        self.lineEdit_name = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_name.setObjectName("lineEdit_name")
-        self.verticalLayout.addWidget(self.lineEdit_name)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-
-        self.pushButton_add = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_add.setObjectName("pushButton_add")
-        self.horizontalLayout_2.addWidget(self.pushButton_add)
-
-        self.pushButton_delete = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_delete.setEnabled(True)
-        self.pushButton_delete.setObjectName("pushButton_delete")
-        self.horizontalLayout_2.addWidget(self.pushButton_delete)
-
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.verticalLayout.addItem(spacerItem)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.vboxlayout.addLayout(self.verticalLayout)
-        self.label_even_odd = QtWidgets.QLabel(self.centralwidget)
-        self.label_even_odd.setObjectName("label_even_odd")
-        self.vboxlayout.addWidget(self.label_even_odd)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        self.pushButton_add.setText(_translate("MainWindow", "Add"))
-        self.pushButton_delete.setText(_translate("MainWindow", "Delete"))
-
+        self.combo = QtWidgets.QComboBox()
+        self.combo.addItems([
+            "Перевірка дій користувача в АС",
+            "Підключені USB носії до АС",
+            "Активність користувача в АС"
+        ])
+        self.combo.setStyleSheet(combostyle)
+        # self.vbox.addWidget(self.combo)
+        label = QtWidgets.QLabel("PROGRAMS AUDIT OS MICROSOFT WINDOWS")
+        label.resize(700, 650)
+        label.setAlignment(QtCore.Qt.AlignHCenter)
+        label.setAutoFillBackground(True)
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.vbox.addWidget(label)
+        MainWindow.setLayout(self.vbox)
