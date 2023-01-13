@@ -1,7 +1,8 @@
 import sys
+
 from PyQt5.QtWidgets import QApplication
-from model.main_model import Model
 from controllers.main_controller import MainController
+from model.main_model import Model
 from views.main_view import MainView
 
 
@@ -10,6 +11,7 @@ class App(QApplication):
         super(App, self).__init__(sys_argv)
 
         self.model = Model()
+
         self.main_controller = MainController(self.model)
         self.main_view = MainView(self.model, self.main_controller)
         self.main_view.show()
