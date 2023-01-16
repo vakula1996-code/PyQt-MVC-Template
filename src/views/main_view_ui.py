@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .style.style_buttons import *
+from PyQt5.QtWidgets import QApplication
 
 
 
@@ -7,11 +8,18 @@ from .style.style_buttons import *
 class Ui_MainWindow(object):
     def setup_ui(self, MainWindow):
         MainWindow.setWindowTitle("Main")
-        MainWindow.resize(700, 800)
-        # self.main_window_fone = MainWindow.palette()
-        # self.main_window_fone.setBrush(QtGui.QPalette.Normal, QtGui.QPalette.Window,
-        #      QtGui.QBrush(QtGui.QPixmap(r"images/fone.jpg")))
-        # MainWindow.setPalette(self.main_window_fone)
+
+        ############На весь екран, незалежно від розміру
+        # self.desktop = QApplication.desktop()
+        # self.screenRect = self.desktop.screenGeometry()
+        # self.height = self.screenRect.height()
+        # self.width = self.screenRect.width()
+        # MainWindow.resize(self.width,self.height)
+
+        MainWindow.resize(700, 700)
+        self.window = QtWidgets.QWidget()
+        self.window.setObjectName('window')
+        self.window.setStyleSheet(stylesheet)
 
         self.combo = QtWidgets.QComboBox()
         self.combo.addItems([
@@ -20,11 +28,38 @@ class Ui_MainWindow(object):
             "Активність користувача в АС"
         ])
         self.combo.setStyleSheet(combostyle)
-        # self.vbox.addWidget(self.combo)
-        label = QtWidgets.QLabel("PROGRAMS AUDIT OS MICROSOFT WINDOWS")
-        label.resize(700, 650)
-        label.setAlignment(QtCore.Qt.AlignHCenter)
-        label.setAutoFillBackground(True)
+
+
+
+        self.tab = QtWidgets.QTabWidget()
+        self.personal_page = QtWidgets.QWidget()
+        self.contact_page = QtWidgets.QWidget()
+        self.tab.addTab(self.personal_page, 'Personal Info')
+        self.tab.addTab(self.contact_page, 'Personal Info')
+        # self.tab.tabBar().hide()
+
+        self.tabel = QtWidgets.QTabWidget(parent = self.personal_page)
+        self.tabel1 = QtWidgets.QTabWidget(parent=self.contact_page)
+
+        self.vbox2 = QtWidgets.QVBoxLayout()
+        self.vbox2.addWidget(self.tabel1)
+        self.contact_page.setLayout(self.vbox2)
+
+        self.vbox1 = QtWidgets.QVBoxLayout()
+        self.vbox1.addWidget(self.tabel)
+        self.personal_page.setLayout(self.vbox1)
+
+        self.button_serch = QtWidgets.QPushButton("SEARCH")
+        self.button_serch.setStyleSheet(button_serch_style)
+
+        self.button_exit = QtWidgets.QPushButton("EXIT")
+        self.button_exit.setStyleSheet(button_exit_style)
+
         self.vbox = QtWidgets.QVBoxLayout()
-        self.vbox.addWidget(label)
-        MainWindow.setLayout(self.vbox)
+        self.vbox.addWidget(self.combo)
+        self.vbox.addWidget(self.tab)
+        self.vbox.addWidget(self.button_serch)
+        self.vbox.addWidget(self.button_exit)
+        self.window.setLayout(self.vbox)
+        MainWindow.setCentralWidget(self.window)
+

@@ -1,4 +1,4 @@
-buttonStyle = ("""QPushButton
+button_exit_style = ("""QPushButton
                 { background-color: #ed0909;
               border-style: outset;
               border-width: 2px;
@@ -29,7 +29,7 @@ buttonStyle = ("""QPushButton
               padding: 6px;
               }
                 """)
-buttonStyle1 = ("""QPushButton
+button_serch_style = ("""QPushButton
                 { background-color: #64b5f6;
               border-style: outset;
               border-width: 2px;
@@ -70,3 +70,11 @@ combostyle = ("""
               min-width: 10em;
               text-align: center;
               padding: 8px; """)
+
+stylesheet = """
+            #window {
+                background-image:url('views/images/fone.jpg'); 
+                background-repeat: repeat-xy; 
+                background-position: center;
+            }
+        """

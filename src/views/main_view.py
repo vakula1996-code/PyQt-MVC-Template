@@ -11,7 +11,14 @@ class MainView(QMainWindow):
         self._main_controller = main_controller
         self._ui = Ui_MainWindow()
         self._ui.setup_ui(self)
+        self._ui.combo.activated.connect(self.onActivateTab)
 
+
+    @pyqtSlot(int)
+    def onActivateTab(self, index):
+        self._ui.tab.setCurrentIndex(index)
+
+        # self._ui.tab.setCurrentIndex(index)
         # self._ui.pushButton_add.clicked.connect(self.on_add_user)
         # self._ui.pushButton_delete.clicked.connect(self.on_delete_user)
         #
