@@ -7,10 +7,19 @@ class MainController(QObject):
 
         self._model = model
 
-    @pyqtSlot(str)
-    def add_user(self, value):
-        self._model.add_user(value)
+    @pyqtSlot(object)
+    def read_file(self, table):
+        self._model.read_file()
+        return self._model.viev_database(table)
 
-    @pyqtSlot(int)
-    def delete_user(self, value):
-        self._model.delete_user(value)
+    def controller_del_db(self):
+        self._model.del_database()
+
+
+    # @pyqtSlot(str)
+    # def add_user(self, value):
+    #     self._model.add_user(value)
+    #
+    # @pyqtSlot(int)
+    # def delete_user(self, value):
+    #     self._model.delete_user(value)

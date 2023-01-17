@@ -38,8 +38,8 @@ class Ui_MainWindow(object):
         self.tab.addTab(self.contact_page, 'Personal Info')
         # self.tab.tabBar().hide()
 
-        self.tabel = QtWidgets.QTabWidget(parent = self.personal_page)
-        self.tabel1 = QtWidgets.QTabWidget(parent=self.contact_page)
+        self.tabel = QtWidgets.QTableView(parent = self.personal_page)
+        self.tabel1 = QtWidgets.QTableView(parent=self.contact_page)
 
         self.vbox2 = QtWidgets.QVBoxLayout()
         self.vbox2.addWidget(self.tabel1)

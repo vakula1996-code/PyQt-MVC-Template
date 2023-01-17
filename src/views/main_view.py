@@ -12,12 +12,28 @@ class MainView(QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setup_ui(self)
         self._ui.combo.activated.connect(self.onActivateTab)
-
+        self._ui.button_serch.clicked.connect(self.read_file)
+        self._ui.button_exit.clicked.connect(self.view_del_db)
 
     @pyqtSlot(int)
     def onActivateTab(self, index):
         self._ui.tab.setCurrentIndex(index)
 
+    def view_del_db(self):
+        self._main_controller.controller_del_db()
+
+    def read_file(self):
+        self.view_db(self._main_controller.read_file(self._ui.tabel))
+
+
+    def view_db(self, model):
+        self._ui.tabel.setModel(model)
+        self._ui.tabel.hideColumn(0)
+        self._ui.tabel.setColumnWidth(1, 100)
+        self._ui.tabel.setColumnWidth(2, 100)
+        self._ui.tabel.setColumnWidth(4, 250)
+        self._ui.tabel.setColumnWidth(5, 250)
+        self._ui.tabel.setColumnWidth(6, 250)
         # self._ui.tab.setCurrentIndex(index)
         # self._ui.pushButton_add.clicked.connect(self.on_add_user)
         # self._ui.pushButton_delete.clicked.connect(self.on_delete_user)
