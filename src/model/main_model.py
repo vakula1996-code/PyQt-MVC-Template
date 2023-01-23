@@ -1,24 +1,40 @@
+import sqlalchemy
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5 import QtSql
-import sqlite3
-import winreg
-from winreg import *
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, table
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, table, select
+from sqlalchemy.orm import Session
+from .service.read_regedit_install import read_file
+from .service.read_activities import read_activities
+
 
 
 class Model(QObject):
     def __init__(self):
         super().__init__()
+        self._engine = create_engine('sqlite:///shows.db', echo=True)
+        self._conn = self._engine.connect()
+        self._meta = MetaData()
+
+        self._regedit_install_data = []
+
+        self._session = Session(self._engine)
         self._regedit_install_model = object
         self.creat_bd()
 
-    def creat_bd(self):
-        engine = create_engine('sqlite:///shows.db', echo=True)
-        conn = engine.connect()
-        meta = MetaData()
+    # def read_activities(self):
+    #     self._session.query(activities_cache).filter(String("display_name = 'user'")).all()
+    #     self.model.beginResetModel()
+    #     self.model._data = []
+    #     for row in cur:
+    #         self.model._data.append([col for col in row])
+    #     self.model.headers = [i[0] for i in cur.description]
+    #     self.model.endResetModel()
 
-        regedit_install = Table(
-            'regedit_install', meta,
+    def list_regedit_install(self):
+        return self._regedit_install_data
+
+    def creat_bd(self):
+        self.regedit_install = Table(
+            'regedit_install', self._meta,
             Column('id', Integer, primary_key=True),
             Column('display_name', String),
             Column('DisplayVersion', String),
@@ -27,75 +43,26 @@ class Model(QObject):
             Column('Publisher', String),
             Column('InstallLocation', String)
         )
-        meta.create_all(engine)
-        conn.close()
+        self.activities_cache = Table(
+            'activities_cache', self._meta,
+            Column('id', Integer, primary_key=True),
+            Column('aplication', String),
+            Column('starttime', String),
+            Column('lastmodifia', String),
+            Column('ExpirationTime', String),
+            Column('LastModifiedOnClient', String),
+            Column('EndTime', String),
+            Column('UserName', String)
+        )
+        self._meta.create_all(self._engine)
 
-    def read_file(self):
-        aReg = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
-        aKey = OpenKey(aReg, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
-        mass = []
-        i = 0
+    def insert_regedit_install(self):
+        self._conn.execute(self.regedit_install.insert(), read_file())
+        self._conn.execute(self.activities_cache.insert(), read_activities())
 
-        try:
-            while True:
-                keyname = EnumKey(aKey, i)
-                asubkey = OpenKey(aKey, keyname)
-                try:
-                    a = (QueryValueEx(asubkey, "DisplayName")[0])
-                except:
-                    a = 'Інформація відсутня'
-                try:
-                    b = (QueryValueEx(asubkey, "DisplayVersion")[0])
-                except:
-                    b = 'Інформація відсутня'
-                try:
-                    c = (QueryValueEx(asubkey, "InstallDate")[0])
-                except:
-                    c = 'Інформація відсутня'
-                try:
-                    d = (QueryValueEx(asubkey, "InstallSource")[0])
-                except:
-                    d = 'Інформація відсутня'
-                try:
-                    e = (QueryValueEx(asubkey, "Publisher")[0])
-                except:
-                    e = 'Інформація відсутня'
-                try:
-                    r = (QueryValueEx(asubkey, "InstallLocation")[0])
-                except:
-                    r = 'Інформація відсутня'
-                i += 1
-                mass.append([a,b,c,d,e,r])
-        except:
-            pass
-
-        self.insert_mas(mass)
-
-    def insert_mas(self,mas):
-        try:
-            con = sqlite3.connect("shows.db")
-            cur = con.cursor()
-            sql = """INSERT INTO regedit_install
-                    ( display_name, DisplayVersion, InstallDate, InstallSource, Publisher, InstallLocation)
-                   VALUES (?,?,?,?,?,?)"""
-            cur.executemany(sql, mas)
-            con.commit()
-            cur.close()
-        except sqlite3.Error as error:
-            print("Ошибка при работе с SQLite", error)
-        finally:
-            if con:
-                con.close()
-                print("Соединение с SQLite закрыто")
-
-    def viev_database(self, table):
-        con = QtSql.QSqlDatabase.addDatabase("QSQLITE")
-        con.setDatabaseName("shows.db")
-        con.open()
-        self._regedit_install_model = QtSql.QSqlQueryModel(parent = table)
-        self._regedit_install_model.setQuery("select * from regedit_install")
-        con.close()
-        return self._regedit_install_model
+    def select_regedit_install(self):
+        regedit_install_keys = self.regedit_install.columns.keys()
+        return (regedit_install_keys, self._session.execute(select(self.regedit_install)).all())
 
     def del_database(self):
         con1 = QtSql.QSqlDatabase.addDatabase("QSQLITE")
@@ -104,25 +71,32 @@ class Model(QObject):
         self._regedit_install_model.setQuery("delete from regedit_install")
         con.close()
 
-    #     self.tabel.setModel(self.model)
-    #     self.tabel.hideColumn(0)
-    #     self.tabel.setColumnWidth(1, 100)
-    #     self.tabel.setColumnWidth(2, 100)
-    #     self.tabel.setColumnWidth(4, 250)
-    #     self.tabel.setColumnWidth(5, 250)
-    #     self.tabel.setColumnWidth(6, 250)
 
-    #     self._users = []
-    #
-    # users_changed = pyqtSignal(list)
-    #
-    # def users(self):
-    #     return self._users
-    #
-    # def add_user(self, value):
-    #     self._users.append(value)
-    #     self.users_changed.emit(self._users)
-    #
-    # def delete_user(self, value):
-    #     del self._users[value]
-    #     self.users_changed.emit(self._users)
+    def write_mass_activities(self,mas):
+        con = sqlite3.connect("shows.db")
+        cur = con.cursor()
+        sql = """INSERT INTO activities_cache
+            (aplication, starttime, lastmodifia, ExpirationTime,
+            LastModifiedOnClient, EndTime, UserName)
+            VALUES (?,?,?,?,?,?,?)"""
+        cur.executemany(sql, mas)
+        con.commit()
+        cur.close()
+
+    def viev_database_activities(self, table1):
+        con = QtSql.QSqlDatabase.addDatabase("QSQLITE")
+        con.setDatabaseName("shows.db")
+        con.open()
+        self._regedit_install_model = QtSql.QSqlQueryModel(parent = table1)
+        self._regedit_install_model.setQuery("select * from activities_cache")
+        con.close()
+        return self._regedit_install_model
+
+
+    # @pyqtSlot(int)
+    def onActivateTab(self, index):
+        self._ui.tab.setCurrentIndex(index)
+
+    def view_del_db(self):
+        self._main_controller.controller_del_db()
+

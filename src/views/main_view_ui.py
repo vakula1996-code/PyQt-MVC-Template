@@ -1,8 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .style.style_buttons import *
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QTableView
+from .costom_widget.table import TableModel
 
 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QTableWidget, QTableWidgetItem
+from PyQt5.QtCore import QSize, Qt
 
 
 class Ui_MainWindow(object):
@@ -29,8 +32,6 @@ class Ui_MainWindow(object):
         ])
         self.combo.setStyleSheet(combostyle)
 
-
-
         self.tab = QtWidgets.QTabWidget()
         self.personal_page = QtWidgets.QWidget()
         self.contact_page = QtWidgets.QWidget()
@@ -38,7 +39,18 @@ class Ui_MainWindow(object):
         self.tab.addTab(self.contact_page, 'Personal Info')
         # self.tab.tabBar().hide()
 
-        self.tabel = QtWidgets.QTableView(parent = self.personal_page)
+        # self.tabel = QtWidgets.QTableView(parent = self.personal_page)
+        #
+        # self.table_model = TableModel()
+        # self.tabel.setModel(self.table_model)
+        # self.tabel.clearSpans()
+        # self.tabel.horizontalHeader().setSectionResizeMode(1)
+        # self.tabel.setAutoFillBackground(True)
+        # self.tabel.setShowGrid(True)
+        # self.tabel.resizeRowsToContents()
+        self.table = QtWidgets.QTableWidget(parent = self.personal_page)  # Create a table
+        self.table.setWordWrap(True)
+
         self.tabel1 = QtWidgets.QTableView(parent=self.contact_page)
 
         self.vbox2 = QtWidgets.QVBoxLayout()
@@ -46,7 +58,7 @@ class Ui_MainWindow(object):
         self.contact_page.setLayout(self.vbox2)
 
         self.vbox1 = QtWidgets.QVBoxLayout()
-        self.vbox1.addWidget(self.tabel)
+        self.vbox1.addWidget(self.table)
         self.personal_page.setLayout(self.vbox1)
 
         self.button_serch = QtWidgets.QPushButton("SEARCH")
@@ -62,4 +74,5 @@ class Ui_MainWindow(object):
         self.vbox.addWidget(self.button_exit)
         self.window.setLayout(self.vbox)
         MainWindow.setCentralWidget(self.window)
+
 
