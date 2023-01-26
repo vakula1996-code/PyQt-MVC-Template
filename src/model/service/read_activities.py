@@ -16,22 +16,25 @@ def read_activities():
 				coursor.execute("""SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Activity'""")
 				if coursor.fetchone()[0] == 1:
 					coursor.execute(
-						"""SELECT AppID, StartTime, LastModifiedTime, ExpirationTime, LastModifiedOnClient, EndTime FROM Activity""")
+						"""SELECT AppID, LastModifiedTime FROM Activity""")
+						# """SELECT AppID, StartTime, LastModifiedTime, ExpirationTime, LastModifiedOnClient, EndTime FROM Activity""")
 				for i in coursor.fetchall():
 					application = i[0]
-					start_time = i[1]
-					last_modif_time = i[2]
-					expiration_time = i[3]
-					last_modifiedon_client = i[4]
-					end_time = i[5]
+					# start_time = i[1]
+					last_modif_time = i[1]
+					# expiration_time = i[3]
+					# last_modifiedon_client = i[4]
+					# end_time = i[5]
 					mass_activities.append({
-											'aplication': application.split(',')[0][17:-1],
-											'starttime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time)),
-											'lastmodifia': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modif_time)),
-											'ExpirationTime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(expiration_time)),
-											'LastModifiedOnClient': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modifiedon_client)),
-											'EndTime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time)),
-											'UserName':user_name1})
+											'aplication': str(application.split(',')[0][17:-1]),
+											# 'starttime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time)),
+											'lastmodifia': str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modif_time))),
+											# 'ExpirationTime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(expiration_time)),
+											# 'LastModifiedOnClient': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modifiedon_client)),
+											# 'EndTime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time)),
+											'UserName':str(user_name1)
+											})
+
 				con.commit()
 				coursor.close()
 	return mass_activities

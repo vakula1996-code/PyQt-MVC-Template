@@ -4,7 +4,10 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 from sqlalchemy.orm import Session
 from .service.read_regedit_install import read_file
 from .service.read_activities import read_activities
-
+from PyQt5 import QtSql
+from PyQt5.QtCore import pyqtSlot
+from .service.prefetch_dir.prefetch_main import prefetch_main
+from .service.event_security import event_read
 
 
 class Model(QObject):
@@ -47,56 +50,71 @@ class Model(QObject):
             'activities_cache', self._meta,
             Column('id', Integer, primary_key=True),
             Column('aplication', String),
-            Column('starttime', String),
+            # Column('starttime', String),
             Column('lastmodifia', String),
-            Column('ExpirationTime', String),
-            Column('LastModifiedOnClient', String),
-            Column('EndTime', String),
+            # Column('ExpirationTime', String),
+            # Column('LastModifiedOnClient', String),
+            # Column('EndTime', String),
             Column('UserName', String)
+        )
+        self.prefetch_table = Table(
+            'prefetch_table', self._meta,
+            Column('id', Integer, primary_key=True),
+            Column('name_file', String),
+            Column('last_executed', String),
+            Column('directory_strings', String),
+            Column('resources_loaded', String),
+        )
+        self.event_security_table = Table(
+            'event_security', self._meta,
+            Column('id', Integer, primary_key=True),
+            Column('task', String),
+            Column('security', String),
+            Column('event', String),
+            Column('date', String),
+            Column('KeyName', String),
+            Column('DomainName', String),
+            Column('PreviousTime', String),
+			Column('NewTime', String)
         )
         self._meta.create_all(self._engine)
 
     def insert_regedit_install(self):
         self._conn.execute(self.regedit_install.insert(), read_file())
         self._conn.execute(self.activities_cache.insert(), read_activities())
+        self._conn.execute(self.prefetch_table.insert(), prefetch_main())
+        self._conn.execute(self.event_security_table.insert(), event_read())
 
     def select_regedit_install(self):
         regedit_install_keys = self.regedit_install.columns.keys()
         return (regedit_install_keys, self._session.execute(select(self.regedit_install)).all())
 
-    def del_database(self):
-        con1 = QtSql.QSqlDatabase.addDatabase("QSQLITE")
-        con1.setDatabaseName("shows.db")
-        con1.open()
-        self._regedit_install_model.setQuery("delete from regedit_install")
-        con.close()
+    def select_activities_cache(self):
+        activities_cache = self.activities_cache.columns.keys()
+        return (activities_cache, self._session.execute(select(self.activities_cache)).all())
 
+    def select_prefetch(self):
+        prefetch_keys = self.prefetch_table.columns.keys()
+        return (prefetch_keys, self._session.execute(select(self.prefetch_table)).all())
 
-    def write_mass_activities(self,mas):
-        con = sqlite3.connect("shows.db")
-        cur = con.cursor()
-        sql = """INSERT INTO activities_cache
-            (aplication, starttime, lastmodifia, ExpirationTime,
-            LastModifiedOnClient, EndTime, UserName)
-            VALUES (?,?,?,?,?,?,?)"""
-        cur.executemany(sql, mas)
-        con.commit()
-        cur.close()
+    def select_event_security(self):
+        event_security_keys = self.event_security_table.columns.keys()
+        return (event_security_keys, self._session.execute(select(self.event_security_table)).all())
 
-    def viev_database_activities(self, table1):
-        con = QtSql.QSqlDatabase.addDatabase("QSQLITE")
-        con.setDatabaseName("shows.db")
-        con.open()
-        self._regedit_install_model = QtSql.QSqlQueryModel(parent = table1)
-        self._regedit_install_model.setQuery("select * from activities_cache")
-        con.close()
-        return self._regedit_install_model
+    def select_event_time(self):
+        event_time_keys = self.event_security_table.columns.keys()
+        # return (event_time_keys, self._session.execute(self.event_security_table.select().where(self.event_security_table.columns.event == 4616)).all())
+        return (event_time_keys, self._session.execute(select(self.event_security_table.columns.event, self.event_security_table.columns.date, self.event_security_table.columns.KeyName, self.event_security_table.columns.PreviousTime, self.event_security_table.columns.NewTime).where(self.event_security_table.columns.event == 4616)).all())
 
-
+    # select(user.c.description).where(user.c.name == 'wendy')
     # @pyqtSlot(int)
-    def onActivateTab(self, index):
-        self._ui.tab.setCurrentIndex(index)
 
     def view_del_db(self):
         self._main_controller.controller_del_db()
 
+    def del_database(self):
+        self._session.query(self.regedit_install).delete()
+        self._session.query(self.activities_cache).delete()
+        self._session.query(self.prefetch_table).delete()
+        self._session.query(self.event_security_table).delete()
+        self._session.commit()

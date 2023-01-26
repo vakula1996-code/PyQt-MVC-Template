@@ -26,17 +26,35 @@ class Ui_MainWindow(object):
 
         self.combo = QtWidgets.QComboBox()
         self.combo.addItems([
-            "Перевірка дій користувача в АС",
-            "Підключені USB носії до АС",
-            "Активність користувача в АС"
+            "Активність ПЗ у системі",
+            "Запуск процесів, які ініціював користувач або процес",
+            "Вивід документів на пристрої друку",
+            "Облікові записи користувачів",
+            "Доступ користувачів до обєктів ОС",
+            "Зміна системного часу в ОС",
+            "Дати встановлення/видалення ПЗ",
+            "Файли та директорії, до яких звертався користувач останнім часом"
         ])
         self.combo.setStyleSheet(combostyle)
 
         self.tab = QtWidgets.QTabWidget()
         self.personal_page = QtWidgets.QWidget()
         self.contact_page = QtWidgets.QWidget()
+        self.vkladka_3 = QtWidgets.QWidget()
+        self.vkladka_4 = QtWidgets.QWidget()
+        self.vkladka_5 = QtWidgets.QWidget()
+        self.vkladka_6 = QtWidgets.QWidget()
+        self.vkladka_7 = QtWidgets.QWidget()
+        self.vkladka_8 = QtWidgets.QWidget()
+
         self.tab.addTab(self.personal_page, 'Personal Info')
         self.tab.addTab(self.contact_page, 'Personal Info')
+        self.tab.addTab(self.vkladka_3, 'TTTTTTTTTTTTTTT')
+        self.tab.addTab(self.vkladka_4, 'AAAAAAAAAAAAAAA')
+        self.tab.addTab(self.vkladka_5, 'WWWWWWWWWWWWWW')
+        self.tab.addTab(self.vkladka_6, 'QQQQQQQQQQQQQQ')
+        self.tab.addTab(self.vkladka_7, 'ZZZZZZZZZZZZZZ')
+        self.tab.addTab(self.vkladka_8, 'ЙЙЙЙЙЙЙЙЙЙЙЙЙЙ')
         # self.tab.tabBar().hide()
 
         # self.tabel = QtWidgets.QTableView(parent = self.personal_page)
@@ -48,10 +66,33 @@ class Ui_MainWindow(object):
         # self.tabel.setAutoFillBackground(True)
         # self.tabel.setShowGrid(True)
         # self.tabel.resizeRowsToContents()
+
         self.table = QtWidgets.QTableWidget(parent = self.personal_page)  # Create a table
         self.table.setWordWrap(True)
 
-        self.tabel1 = QtWidgets.QTableView(parent=self.contact_page)
+        self.tabel1 = QtWidgets.QTableWidget(parent=self.contact_page)
+        self.tabel1.setWordWrap(True)
+
+        self.tabel3 = QtWidgets.QTableWidget(parent=self.vkladka_3)
+        self.tabel3.setWordWrap(True)
+
+        self.tabel4 = QtWidgets.QTableWidget(parent=self.vkladka_4)
+        self.tabel4.setWordWrap(True)
+
+        self.tabel5 = QtWidgets.QTableWidget(parent=self.vkladka_5)
+        self.tabel5.setWordWrap(True)
+
+        self.vbox5 = QtWidgets.QVBoxLayout()
+        self.vbox5.addWidget(self.tabel5)
+        self.vkladka_5.setLayout(self.vbox5)
+
+        self.vbox4 = QtWidgets.QVBoxLayout()
+        self.vbox4.addWidget(self.tabel4)
+        self.vkladka_4.setLayout(self.vbox4)
+
+        self.vbox3 = QtWidgets.QVBoxLayout()
+        self.vbox3.addWidget(self.tabel3)
+        self.vkladka_3.setLayout(self.vbox3)
 
         self.vbox2 = QtWidgets.QVBoxLayout()
         self.vbox2.addWidget(self.tabel1)
