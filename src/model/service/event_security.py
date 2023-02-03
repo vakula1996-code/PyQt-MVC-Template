@@ -40,12 +40,11 @@ def event_read():
                 except:
                     DomainName = 'Не знайдено'
                 try:
-                    PreviousTime = json1['Event']['EventData']['PreviousTime']
+                    PreviousTime = (json1['Event']['EventData']['PreviousTime'])[:10] +' '+ (json1['Event']['EventData']['PreviousTime'])[11:19]
                 except:
                     PreviousTime = 'Не знайдено'
                 try:
-                    NewTime = json1['Event']['EventData']['NewTime']
-                    # NewTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(NewTimee))
+                    NewTime = (json1['Event']['EventData']['NewTime'])[:10] +' '+ (json1['Event']['EventData']['NewTime'])[11:19]
                 except:
                     NewTime = 'Не знайдено'
 
@@ -59,6 +58,6 @@ def event_read():
                         'PreviousTime': PreviousTime,
                         'NewTime': NewTime
                         })
-            # print(my_list)
+            # print(my_list['NewTime'])
 # event_read()
     return my_list

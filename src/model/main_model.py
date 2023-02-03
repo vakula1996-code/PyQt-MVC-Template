@@ -8,7 +8,8 @@ from PyQt5 import QtSql
 from PyQt5.QtCore import pyqtSlot
 from .service.prefetch_dir.prefetch_main import prefetch_main
 from .service.event_security import event_read
-
+from .service.recent import path_users
+from .service.event_aplication_install_and_delete import read_event_instal_and_delete
 
 class Model(QObject):
     def __init__(self):
@@ -77,6 +78,26 @@ class Model(QObject):
             Column('PreviousTime', String),
 			Column('NewTime', String)
         )
+        self.recent_table = Table(
+            'recent_table', self._meta,
+            Column('id', Integer, primary_key=True),
+            Column('user', String),
+            Column('date_create', String),
+            Column('info', String),
+            Column('local_path', String),
+            Column('size', String)
+        )
+        self.event_aplication_table = Table(
+            'event_aplication_table', self._meta,
+            Column('id', Integer, primary_key=True),
+            Column('task', String),
+            Column('programs_name', String),
+            Column('programs_version', String),
+            Column('programs_product', String),
+            Column('programs_time', String),
+            Column('computer', String),
+            Column('info', String)
+        )
         self._meta.create_all(self._engine)
 
     def insert_regedit_install(self):
@@ -84,6 +105,9 @@ class Model(QObject):
         self._conn.execute(self.activities_cache.insert(), read_activities())
         self._conn.execute(self.prefetch_table.insert(), prefetch_main())
         self._conn.execute(self.event_security_table.insert(), event_read())
+        self._conn.execute(self.recent_table.insert(), path_users())
+        self._conn.execute(self.event_aplication_table.insert(), read_event_instal_and_delete())
+
 
     def select_regedit_install(self):
         regedit_install_keys = self.regedit_install.columns.keys()
@@ -106,8 +130,15 @@ class Model(QObject):
         # return (event_time_keys, self._session.execute(self.event_security_table.select().where(self.event_security_table.columns.event == 4616)).all())
         return (event_time_keys, self._session.execute(select(self.event_security_table.columns.event, self.event_security_table.columns.date, self.event_security_table.columns.KeyName, self.event_security_table.columns.PreviousTime, self.event_security_table.columns.NewTime).where(self.event_security_table.columns.event == 4616)).all())
 
+    def select_recent(self):
+        recent_keys = self.recent_table.columns.keys()
+        return (recent_keys, self._session.execute(select(self.recent_table)).all())
     # select(user.c.description).where(user.c.name == 'wendy')
     # @pyqtSlot(int)
+
+    def select_event_aplication_install_and_delete(self):
+        event_aplication_install_and_delete = self.event_aplication_table.columns.keys()
+        return (event_aplication_install_and_delete, self._session.execute(select(self.event_aplication_table)).all())
 
     def view_del_db(self):
         self._main_controller.controller_del_db()
@@ -117,4 +148,6 @@ class Model(QObject):
         self._session.query(self.activities_cache).delete()
         self._session.query(self.prefetch_table).delete()
         self._session.query(self.event_security_table).delete()
+        self._session.query(self.recent_table).delete()
+        self._session.query(self.event_aplication_table).delete()
         self._session.commit()

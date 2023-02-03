@@ -1,4 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from wheel.cli.pack import pack
+
 from .style.style_buttons import *
 from PyQt5.QtWidgets import QApplication, QTableView
 from .costom_widget.table import TableModel
@@ -47,12 +49,12 @@ class Ui_MainWindow(object):
         self.vkladka_7 = QtWidgets.QWidget()
         self.vkladka_8 = QtWidgets.QWidget()
 
-        self.tab.addTab(self.personal_page, 'Personal Info')
-        self.tab.addTab(self.contact_page, 'Personal Info')
-        self.tab.addTab(self.vkladka_3, 'TTTTTTTTTTTTTTT')
+        self.tab.addTab(self.personal_page, 'Інстальоване ПЗ (відомості з реєстру)')
+        self.tab.addTab(self.contact_page, 'Інформація, яка міститься в файлі PREFETCH')
+        self.tab.addTab(self.vkladka_3, 'Запуск программ користувачами')
         self.tab.addTab(self.vkladka_4, 'AAAAAAAAAAAAAAA')
-        self.tab.addTab(self.vkladka_5, 'WWWWWWWWWWWWWW')
-        self.tab.addTab(self.vkladka_6, 'QQQQQQQQQQQQQQ')
+        self.tab.addTab(self.vkladka_5, 'Зміна часу системи')
+        self.tab.addTab(self.vkladka_6, 'Файли та директорії, до яких звертався користувач останнім часом')
         self.tab.addTab(self.vkladka_7, 'ZZZZZZZZZZZZZZ')
         self.tab.addTab(self.vkladka_8, 'ЙЙЙЙЙЙЙЙЙЙЙЙЙЙ')
         # self.tab.tabBar().hide()
@@ -81,6 +83,20 @@ class Ui_MainWindow(object):
 
         self.tabel5 = QtWidgets.QTableWidget(parent=self.vkladka_5)
         self.tabel5.setWordWrap(True)
+
+        self.tabel6 = QtWidgets.QTableWidget(parent=self.vkladka_6)
+        self.tabel6.setWordWrap(True)
+
+        self.tabel7 = QtWidgets.QTableWidget(parent=self.vkladka_7)
+        self.tabel7.setWordWrap(True)
+
+        self.vbox7 = QtWidgets.QVBoxLayout()
+        self.vbox7.addWidget(self.tabel7)
+        self.vkladka_7.setLayout(self.vbox7)
+
+        self.vbox6 = QtWidgets.QVBoxLayout()
+        self.vbox6.addWidget(self.tabel6)
+        self.vkladka_6.setLayout(self.vbox6)
 
         self.vbox5 = QtWidgets.QVBoxLayout()
         self.vbox5.addWidget(self.tabel5)

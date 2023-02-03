@@ -27,10 +27,16 @@ class MainController(QObject):
     def select_event_security_time_control(self):
         return self._model.select_event_time()
 
+    def select_recent_control(self):
+        return self._model.select_recent()
+
     # @pyqtSlot(object)
     # def controller_read_activities(self, table):
     #     self._model.read_activities()
     #     return self._model.viev_database_activities(table)
+
+    def select_event_aplication_install_and_delete(self):
+        return self._model.select_event_aplication_install_and_delete()
 
     def controller_del_db(self):
         self._model.del_database()
